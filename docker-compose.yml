@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  logstash:
+    image: logstash:jdbc
+    # restart: always
+    depends_on:
+      - postgres
+    environment:
+      - ES_HOST=h1.eko06.local
+      - JDBC_CONNECTION_STRING=jdbc:postgresql://postgres/logstash
+      - JDBC_USER=user
+      - JDBC_PASSWORD=password
+
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_DB=logstash
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    environment:
+      - ADMINER_DESIGN=nette
+    ports:
+      - 8080:8080
